@@ -12,7 +12,7 @@ if os.path.exists(img_path):
     st.image(img_path)
 
 # 读取数据
-df = pd.read_csv("C:\\Users\\Wylla\\wrds_financial_data.csv")
+df = pd.read_csv("wrds_financial_data.csv")
 
 # 公司选择
 companies = sorted(df["conm"].unique())
