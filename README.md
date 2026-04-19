@@ -27,22 +27,32 @@ Short-term profit margin volatility was observed around the early period of the 
 High ROE performance does not always correspond to strong underlying asset efficiency (ROA)
 Interactive visualization makes year-over-year financial trend patterns far easier to identify than static tables
 
-## Files Included
-- app.py: Streamlit interactive application
-- ACC102_WRDS_Analysis1.ipynb: Full data analysis notebook
-- wrds_financial_data.csv: Cleaned financial dataset
-- README.md: Project documentation
-- demo_video.mp4: 1–3 minute demonstration video
-- reflection_report.pdf: 500–800 words reflection report
-
-## How to Run Locally
-1. Install required packages:
+## 5. How to run
+Clone or download all project files to your local device
+Install required dependencies:
    pip install pandas streamlit
-2. Run the app:
+Open terminal in the project folder
+Run the comman:
    streamlit run app.py
 
-## Product Link
+## 6. Product link / Demo
+Live interactive dashboard deployment:
 (https://acc102-n374fynaryjmxeta6rxx46.streamlit.app/)
+A 1–3 minute demo video showing full tool functionality is also attached in the submission folder.
+
+
+## 7. Limitations & next steps
+Limitations:
+Currently only supports single-company individual year trend viewing
+No built-in side-by-side multi-company or industry average benchmark comparison
+Advanced statistical forecasting and risk scoring functions are not included
+Initial outlier and missing value handling can be further refined
+Next Steps for Optimization:
+Add industry classification filters and sector average benchmark lines
+Implement bulk multi-company selection and comparative charts
+Add one-click downloadable analysis report function
+Further optimize matplotlib chart rendering stability for better visual consistency
+Add plain-text financial interpretation guidance for beginner users
 
 ## Author
 Yunlu.Wu24
