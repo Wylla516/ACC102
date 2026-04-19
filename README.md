@@ -2,24 +2,30 @@
 # ACC102 Mini Assignment - Track 4: Interactive Financial Analysis Tool
 S&P 500 Corporate Financial Ratio Analysis (2020–2024)
 
-## Overview
-This project is an interactive data analysis tool built with Python and Streamlit. It supports users to explore financial ratios of S&P 500 companies from 2020 to 2024, including ROA, ROE, debt-to-asset ratio, and profit margin.
+## 1. Problem & User
+This project solves the difficulty of manually comparing and interpreting large volumes of corporate financial performance data across multiple years. It delivers a simplified, interactive dashboard for ACC102 students, beginner investors, and financial learners to quickly assess S&P 500 company profitability and risk without advanced technical expertise.
 
-## Analytical Purpose
-- Analyze profitability and leverage trends of S&P 500 companies.
-- Provide an interactive interface for users to view market-wide trends and individual company performance.
+## 2. Data
+Source: WRDS (Wharton Research Data Services) academic financial database
+Access Date: April 10, 2026
+Time Period: 2020–2024
+Key Fields & Calculated Metrics: Total assets, total equity, total debt, net income, total revenue; derived ratios including ROA, ROE, debt-to-asset ratio, and net profit margin.
 
-## Dataset
-- Source: WRDS (Wharton Research Data Services)
-- Period: 2020–2024
-- Sample: S&P 500 firms
-- Calculated ratios: ROA, ROE, Debt_Asset, Profit_Margin
+## 3. Methods (main Python steps)
+Import raw WRDS financial dataset into Pandas DataFrame
+Perform data cleaning: remove null values, filter invalid outliers, standardize column names
+Code custom formulas to calculate core financial ratios
+Conduct exploratory trend analysis and cross-year comparison
+Build interactive filtering, dropdown selection and dynamic visualization with Streamlit
+Resolve matplotlib rendering compatibility conflicts for cloud deployment
+Deploy the fully functional dashboard to Streamlit Community Cloud
 
-## Tools & Libraries
-- Python
-- Pandas
-- Streamlit
-- Jupyter Notebook
+## 4. Key Findings
+There is large variation in profitability (ROA/ROE) performance across different S&P 500 industry sectors over the 5-year window
+Company leverage levels (debt-to-asset ratio) remained relatively stable for most large-cap firms between 2020 and 2024
+Short-term profit margin volatility was observed around the early period of the dataset
+High ROE performance does not always correspond to strong underlying asset efficiency (ROA)
+Interactive visualization makes year-over-year financial trend patterns far easier to identify than static tables
 
 ## Files Included
 - app.py: Streamlit interactive application
