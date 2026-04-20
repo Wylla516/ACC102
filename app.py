@@ -3,7 +3,7 @@ import pandas as pd
 import os
 
 st.title("WRDS S&P 500 Financial Ratio Analyzer")
-st.caption("ACC102 Track 4 | 2020-2024 Data")
+st.caption("ACC102 Track 4 Interactive Tool | 2020-2024 Data")
 
 st.subheader("Overall Market Trend (2020-2024)")
 img_path = "overall_trend.png"
