@@ -38,4 +38,4 @@ st.dataframe(df_company[["year", "ROA", "ROE", "Debt_Asset", "Profit_Margin"]].r
 # Replaced deprecated `use_container_width` parameter
 # Avoids Streamlit version warning & matplotlib compatibility conflict
 st.subheader("ROE Trend")
-st.line_chart(df_company, x="year", y="ROE", width="stretch)
+st.line_chart(df_company, x="year", y="ROE", width="stretch")
