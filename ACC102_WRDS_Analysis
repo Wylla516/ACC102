@@ -1,1 +1,30 @@
+#ACC102 Track 4 Reflection Report
+Yunlu Wu   
+##Introduction
+In this Track 4 interactive financial analysis assignment, I constructed a complete, fully functional financial performance dashboard by using Python, Pandas, WRDS and Streamlit. The raw dataset applied in this entire project is officially retrieved from the WRDS database, covering the financial records of major S&P 500 listed companies across the five-year period from 2020 to 2024. Data were accessed on April 12, 2026. Throughout the entire project lifecycle, I independently planned and completed the full end-to-end workflow, including original data extraction, systematic data cleaning, outlier filtering, financial ratio calculation, custom interactive webpage development and final cloud platform online deployment. This formal reflection report summarizes my core learning gains throughout the task, the unexpected real difficulties I ran into, my full problem-solving process, overall personal skill improvement, as well as the objective existing limitations and targeted future optimization directions of this completed project.
+
+##Analytical Purpose and Target User
+The purpose of this project is to help users quickly understand the profitability, leverage and operational efficiency of listed companies through clear and interactive visualizations. The target users include accounting students, novice investors and general users who need an intuitive tool to explore financial performance without advanced software or technical skills. This tool turns raw financial data into easy to read trends and tables, making corporate performance analysis accessible to non expert users.
+
+##Dataset Description
+The dataset was obtained from the WRDS academic database, covering S&P 500 firms from 2020 to 2024. WRDS provides high-quality, standardized financial data widely used in academic research. The five-year period supports reliable trend analysis and the large sample ensures representativeness. Key fields include total assets, total liabilities, net income, revenue and total equity. I calculated four core financial ratios including ROA, ROE, debt-to-asset ratio and profit margin, which together measure profitability, capital structure and operational efficiency.
+
+##Python Methods Used
+I used Pandas for data loading, missing value handling, duplicate removal, outlier filtering and financial ratio calculation. I used Streamlit to build the interactive web interface and deploy the tool online because it supports fast and stable user interface development. During deployment, I fixed file path errors, replaced matplotlib with native Streamlit charts to avoid compatibility conflicts and adjusted deprecated code to remove warnings and ensure stable performance. I also organized project files and wrote a standard README to support reproducibility.
+
+##Main Outputs and Insights
+The final product allows users to select any company and view its five-year financial ratios and trend charts. Key insights from the analysis include that profitability ratios such as ROA and ROE varied significantly across companies, indicating differences in operating efficiency. Most firms showed a recovery in profitability after 2020 and peaked around 2023, which reflects improving overall business conditions. ROE and ROA did not always change consistently, showing that some companies achieve higher shareholder return through financial leverage rather than asset efficiency. Leverage levels remained relatively stable for most large-cap companies over the five years, indicating moderate and sustainable risk management.
+
+##Challenges and Problem-Solving
+The main challenges were related to cloud deployment. Initially, I used local absolute paths, causing the app to fail loading data online. I solved this by switching to relative paths and uploading all files to GitHub. I also faced matplotlib rendering conflicts. I replaced external visualization libraries with Streamlit’s native charts to ensure stable display and smooth user experience.
+
+##Limitations, Data Reliability and Future Improvements
+This project has several limitations. It only supports single-company queries and lacks industry filters, multi-company comparison and detailed financial interpretations. Regarding data reliability, the WRDS source is highly credible. However, some missing values and basic outlier handling may reduce the precision of certain observations. Survivor bias and limited adjustment for industry differences may also affect comparison results. I removed extreme values to avoid distortion, but more advanced statistical methods could further improve robustness. In the future, I will add multi-company comparison, industry average benchmarks, more visualization types and built-in financial interpretations to make the tool more comprehensive and user-friendly.
+
+##Personal Contribution and Learning
+I independently completed all parts of this project, including data processing, code writing, ratio selection, debugging and cloud deployment. I chose the four key financial ratios because they cover the core dimensions of corporate financial health emphasized in accounting studies. This project helped me connect textbook accounting knowledge with real data applications and strengthened my Python programming, data analysis and problem-solving skills.
+
+##AI Disclosure
+I used Doubao and ChatGPT AI between April 10 and April 20, 2026 to assist with code debugging, grammar checking, solve the problem of code error and reflection structure organization. All project design, data analysis, financial interpretation, ratio selection and final revisions were completed independently to ensure originality, academic integrity and full understanding.
+
 
