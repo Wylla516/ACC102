@@ -7,7 +7,13 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
-import wrds
+
+try:
+    import wrds
+except ImportError:
+    import subprocess, sys
+    subprocess.check_call([sys.executable,"-m","pip","install","wrds"])
+    import wrds
 
 # --------------------------
 # Page Basic Configuration
