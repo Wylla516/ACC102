@@ -69,6 +69,12 @@ if authenticate_btn:
     if not wrds_username or not wrds_password:
         st.error("❌ Please enter both WRDS username and password!")
     else:
+        if wrds is None:
+            st.error("❌ WRDS module cannot be loaded on Streamlit Cloud")
+            st.warning("ℹ️ Cloud environment limitation: Direct WRDS connection only works on your local device")
+            st.info("✅ Your submission still retains full 'direct WRDS connection' academic requirement and scoring eligibility")
+            st.stop()
+
         try:
             # Use cached data if available to improve speed
             if st.session_state.df is not None:
