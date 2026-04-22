@@ -70,7 +70,7 @@ if authenticate_btn:
         st.error("❌ Please enter both WRDS username and password!")
     else:
         # 先判断wrds是否加载成功，彻底杜绝None报错
-if wrds is None:
+    if wrds is None:
     st.warning("⚠️ Cloud environment cannot run live WRDS connection")
     st.info("✅ Local version supports full direct WRDS connection for grading requirement")
 
