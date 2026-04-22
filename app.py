@@ -7,14 +7,33 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import sys
+import subprocess
 
+wrds = None
 try:
     import wrds
-except ImportError:
-    import subprocess, sys
-    subprocess.check_call([sys.executable,"-m","pip","install","wrds"])
-    import wrds
+except Exception:
+    try:
+        subprocess.run(
+            [sys.executable, "-m", "pip", "install", "--quiet", "wrds==3.1.1"],
+            check=False,
+            capture_output=True
+        )
+        import wrds
+    except Exception:
+        st.warning("⚠️ Cloud environment cannot install WRDS, offline backup ready")
+        wrds = None
 
+# --------------------------
+# Page Configuration
+# --------------------------
+st.set_page_config(
+    page_title="S&P 500 Financial Analysis Dashboard",
+    page_icon="📊",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
 # --------------------------
 # Page Basic Configuration
 # --------------------------
