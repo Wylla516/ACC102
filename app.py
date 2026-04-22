@@ -140,6 +140,132 @@ Margin fluctuation corresponds to macro cost pressure and market competition cha
 """)
 st.markdown("---")
 
+  # ==============================================
+    # Chart 3: Profit Margin Bar Chart (Dynamic)
+    # ==============================================
+    st.subheader("3. Annual Profit Margin Bar Chart")
+    st.bar_chart(company_df.set_index("year")["Profit_Margin"], color="#2E8B57", use_container_width=True)
+
+    best_pm_year = company_df.loc[company_df["Profit_Margin"].idxmax(), "year"]
+    worst_pm_year = company_df.loc[company_df["Profit_Margin"].idxmin(), "year"]
+
+    st.markdown(f"""
+    Dynamic Analysis:
+    - {selected_company} achieved its **strongest profit margin in {best_pm_year}**.
+    - Profitability was weakest in **{worst_pm_year}**, reflecting external or internal pressures.
+    - The bar chart clearly shows annual variations in operating performance.
+    """)
+    st.markdown("---")
+
+    # ==============================================
+    # Chart 4: Company vs Market Box Plot (UPDATED)
+    # ==============================================
+    st.subheader("4. Company vs Market Debt Distribution Box Plot")
+
+    df_market = filtered_df.copy()
+    df_market["Group"] = "Market (200 Firms)"
+    df_comp = company_df.copy()
+    df_comp["Group"] = selected_company
+    box_data = pd.concat([df_market, df_comp], ignore_index=True)
+
+    fig_box = px.box(
+        box_data,
+        x="Group",
+        y="Debt_Asset",
+        color="Group",
+        title=f"{selected_company} vs Market Debt Level Comparison",
+        color_discrete_map={
+            selected_company: "#FF5A5A",
+            "Market (200 Firms)": "#8A2BE2"
+        }
+    )
+    fig_box.update_layout(template="plotly_dark")
+    st.plotly_chart(fig_box, use_container_width=True)
+
+    comp_debt = company_df["Debt_Asset"].mean()
+    market_debt = filtered_df["Debt_Asset"].mean()
+    debt_position = "higher than" if comp_debt > market_debt else "lower than"
+
+    st.markdown(f"""
+    Dynamic Comparison:
+    - {selected_company}’s average debt ratio is **{comp_debt:.3f}**.
+    - Market average debt ratio is **{market_debt:.3f}**.
+    - This company’s leverage is **{debt_position}** the overall market level.
+    """)
+    st.markdown("---")
+
+    # ==============================================
+    # Chart 5: ROA & ROE Scatter Plot
+    # ==============================================
+    st.subheader("5. ROA & ROE Correlation Scatter Plot")
+    scatter_data = company_df[["year","ROA","ROE"]]
+    st.scatter_chart(scatter_data, x="ROA", y="ROE", color="#DC143C", size=150, use_container_width=True)
+
+    corr = company_df[["ROA", "ROE"]].corr().iloc[0,1]
+
+    st.markdown(f"""
+    Dynamic Analysis:
+    - Correlation coefficient between ROA and ROE: **{corr:.3f}**.
+    - A high positive correlation means profitability drivers are **consistent and stable**.
+    - Low correlation indicates high sensitivity to financial leverage.
+    """)
+    st.markdown("---")
+
+    # ==============================================
+    # Chart 6: Profitability Area Chart
+    # ==============================================
+    st.subheader("6. Comprehensive Financial Trend Area Chart")
+    area_data = company_df.set_index("year")[["ROA","Profit_Margin"]]
+    st.area_chart(area_data, color=["#4682B4","#32CD32"], use_container_width=True)
+
+    st.markdown(f"""
+    Dynamic Trend:
+    - This chart shows the **cumulative profitability trend** for {selected_company}.
+    - Green area = profit margin; blue area = ROA.
+    - Expanding areas indicate **improving operational efficiency**.
+    """)
+    st.markdown("---")
+
+    # ==============================================
+    # Chart 7: Company vs Market Benchmark
+    # ==============================================
+    st.subheader("7. Company VS S&P 500 Market Average Benchmark Comparison")
+    compare_df = pd.merge(company_df, market_avg, on="year", suffixes=("_firm","_market"))
+    compare_display = compare_df[["year","ROA_firm","ROA_market","ROE_firm","ROE_market"]].set_index("year")
+    st.bar_chart(compare_display, use_container_width=True)
+
+    roe_vs_market = "outperforms" if company_df["ROE"].mean() > market_avg["ROE"].mean() else "underperforms"
+
+    st.markdown(f"""
+    Dynamic Benchmark Result:
+    - {selected_company} **{roe_vs_market}** the market average in terms of ROE.
+    - The chart clearly shows annual performance relative to industry peers.
+    """)
+    st.markdown("---")
+
+    # ==============================================
+    # Chart 8: Risk & Volatility Bar Chart
+    # ==============================================
+    st.subheader("8. Financial Risk & Volatility Horizontal Bar Chart")
+    vol_data = pd.DataFrame({
+        "Indicator":["ROA Volatility","ROE Volatility","Debt Ratio Level","Profit Level"],
+        "Value":[
+            round(company_df["ROA"].std(skipna=True),3),
+            round(company_df["ROE"].std(skipna=True),3),
+            company_df["Debt_Asset"].mean(skipna=True).round(3),
+            company_df["Profit_Margin"].mean(skipna=True).round(3)
+        ]
+    })
+    st.bar_chart(vol_data, x="Indicator", y="Value", horizontal=True, color="#FF647C", use_container_width=True)
+
+    st.markdown("""
+    Dynamic Risk Analysis:
+    - Higher volatility values indicate **less stable** financial performance.
+    - Debt ratio level reflects long-term capital structure risk.
+    - Profit level shows overall operational return quality.
+    """)
+    st.markdown("---")
+
 # --------------------------
 # 5-Year Average Key Indicators
 # --------------------------
