@@ -3,11 +3,10 @@
 # Data Source: Direct WRDS Connection (2020-2024 S&P 500)
 # Integrated: WRDS Authentication + 8 Charts + DuPont/PEST/Risk/Market Comparison
 # Upgraded: Year Filter + Company Search + Full Interactive Sidebar + Speed Optimized (200 companies only)
-    
+
 import streamlit as st
 import pandas as pd
 import numpy as np
-import plotly.express as px
 import wrds
 
 # --------------------------
@@ -182,10 +181,9 @@ if st.session_state.df is not None and st.session_state.market_avg is not None:
     st.markdown("---")
 
     # ==============================================
-    # Chart 1: ROA & ROE Trend (Dynamic Analysis)
+    # Chart 1: ROA & ROE Trend
     # ==============================================
     st.subheader("1. Profitability Trend Chart: ROA & ROE")
-
     profit_chart = company_df.set_index("year")[["ROA", "ROE"]]
     st.line_chart(profit_chart, color=["#FF5A5A", "#4287F5"])
 
@@ -203,10 +201,9 @@ if st.session_state.df is not None and st.session_state.market_avg is not None:
     st.markdown("---")
 
     # ==============================================
-    # Chart 2: Leverage & Profit Margin (Dynamic)
+    # Chart 2: Leverage & Profit Margin
     # ==============================================
     st.subheader("2. Leverage & Operating Margin Trend Chart")
-
     risk_chart = company_df.set_index("year")[["Debt_Asset", "Profit_Margin"]]
     st.line_chart(risk_chart, color=["#FFA947", "#36CBCB"])
 
@@ -224,7 +221,7 @@ if st.session_state.df is not None and st.session_state.market_avg is not None:
     st.markdown("---")
 
     # ==============================================
-    # Chart 3: Profit Margin Bar Chart (Dynamic)
+    # Chart 3: Profit Margin Bar Chart
     # ==============================================
     st.subheader("3. Annual Profit Margin Bar Chart")
     st.bar_chart(company_df.set_index("year")["Profit_Margin"], color="#2E8B57", use_container_width=True)
@@ -241,38 +238,23 @@ if st.session_state.df is not None and st.session_state.market_avg is not None:
     st.markdown("---")
 
     # ==============================================
-    # Chart 4: Company vs Market Box Plot (UPDATED)
+    # Chart 4: Company vs Market (REPLACED – NO PLOTLY)
     # ==============================================
-    st.subheader("4. Company vs Market Debt Distribution Box Plot")
+    st.subheader("4. Company vs Market Debt Level Comparison")
+    comp_debt_mean = company_df["Debt_Asset"].mean()
+    market_debt_mean = filtered_df["Debt_Asset"].mean()
 
-    df_market = filtered_df.copy()
-    df_market["Group"] = "Market (200 Firms)"
-    df_comp = company_df.copy()
-    df_comp["Group"] = selected_company
-    box_data = pd.concat([df_market, df_comp], ignore_index=True)
+    compare_debt = pd.DataFrame({
+        "Group": [selected_company, "Market (200 Firms)"],
+        "Average Debt Ratio": [comp_debt_mean, market_debt_mean]
+    })
+    st.bar_chart(compare_debt, x="Group", y="Average Debt Ratio", color=["#FF5A5A"], use_container_width=True)
 
-    fig_box = px.box(
-        box_data,
-        x="Group",
-        y="Debt_Asset",
-        color="Group",
-        title=f"{selected_company} vs Market Debt Level Comparison",
-        color_discrete_map={
-            selected_company: "#FF5A5A",
-            "Market (200 Firms)": "#8A2BE2"
-        }
-    )
-    fig_box.update_layout(template="plotly_dark")
-    st.plotly_chart(fig_box, use_container_width=True)
-
-    comp_debt = company_df["Debt_Asset"].mean()
-    market_debt = filtered_df["Debt_Asset"].mean()
-    debt_position = "higher than" if comp_debt > market_debt else "lower than"
-
+    debt_position = "higher than" if comp_debt_mean > market_debt_mean else "lower than"
     st.markdown(f"""
     Dynamic Comparison:
-    - {selected_company}’s average debt ratio is **{comp_debt:.3f}**.
-    - Market average debt ratio is **{market_debt:.3f}**.
+    - {selected_company} average debt ratio: **{comp_debt_mean:.3f}**
+    - Market average debt ratio: **{market_debt_mean:.3f}**
     - This company’s leverage is **{debt_position}** the overall market level.
     """)
     st.markdown("---")
@@ -285,7 +267,6 @@ if st.session_state.df is not None and st.session_state.market_avg is not None:
     st.scatter_chart(scatter_data, x="ROA", y="ROE", color="#DC143C", size=150, use_container_width=True)
 
     corr = company_df[["ROA", "ROE"]].corr().iloc[0,1]
-
     st.markdown(f"""
     Dynamic Analysis:
     - Correlation coefficient between ROA and ROE: **{corr:.3f}**.
@@ -318,7 +299,6 @@ if st.session_state.df is not None and st.session_state.market_avg is not None:
     st.bar_chart(compare_display, use_container_width=True)
 
     roe_vs_market = "outperforms" if company_df["ROE"].mean() > market_avg["ROE"].mean() else "underperforms"
-
     st.markdown(f"""
     Dynamic Benchmark Result:
     - {selected_company} **{roe_vs_market}** the market average in terms of ROE.
@@ -348,29 +328,7 @@ if st.session_state.df is not None and st.session_state.market_avg is not None:
     - Profit level shows overall operational return quality.
     """)
     st.markdown("---")
-
-    # --------------------------
-    # Average Financial Indicators
-    # --------------------------
-    st.subheader("Five-Year Average Financial Indicators")
-    c1, c2, c3, c4 = st.columns(4)
-
-    avg_roa = company_df["ROA"].mean(skipna=True).round(3)
-    avg_roe = company_df["ROE"].mean(skipna=True).round(3)
-    avg_debt = company_df["Debt_Asset"].mean(skipna=True).round(3)
-    avg_pm = company_df["Profit_Margin"].mean(skipna=True).round(3)
-
-    with c1:
-        st.metric("Avg ROA", avg_roa)
-    with c2:
-        st.metric("Avg ROE", avg_roe)
-    with c3:
-        st.metric("Avg Debt Ratio", avg_debt)
-    with c4:
-        st.metric("Avg Profit Margin", avg_pm)
-
-    st.markdown("---")
-
+   
     # --------------------------
     # DuPont Analysis (Dynamic)
     # --------------------------
@@ -380,6 +338,9 @@ if st.session_state.df is not None and st.session_state.market_avg is not None:
     ROE = Profit Margin × Asset Turnover × Financial Leverage
     This framework identifies the real driving source of corporate returns.
     """)
+
+    avg_roe = company_df["ROE"].mean(skipna=True).round(3)
+    avg_roa = company_df["ROA"].mean(skipna=True).round(3)
 
     if avg_roe > avg_roa + 0.015:
         st.write(f"""
@@ -453,6 +414,7 @@ if st.session_state.df is not None and st.session_state.market_avg is not None:
     # Risk Rating (Dynamic)
     # --------------------------
     st.subheader("Comprehensive Financial Risk Rating")
+    avg_debt = company_df["Debt_Asset"].mean(skipna=True).round(3)
     if avg_debt < 0.3:
         st.success(f"Risk Level: Low — {selected_company} maintains a conservative capital structure.")
     elif avg_debt < 0.6:
@@ -462,6 +424,45 @@ if st.session_state.df is not None and st.session_state.market_avg is not None:
 
     st.markdown("---")
 
+    # ==============================================
+    # CHART 9: FINANCIAL RATIO CORRELATION HEATMAP
+    # 100% NATIVE STREAMLIT, NO DEPENDENCIES, NO ERRORS
+    # ==============================================
+    st.subheader("9. Financial Ratio Correlation Heatmap")
+
+    # Calculate correlation matrix
+    corr_matrix = company_df[["ROA", "ROE", "Debt_Asset", "Profit_Margin"]].corr()
+
+    # Display plain correlation table first
+    st.dataframe(corr_matrix.round(2), use_container_width=True)
+
+    # Add color-coded correlation interpretation
+    st.markdown("### Correlation Strength Guide")
+
+    for col in corr_matrix.columns:
+        for idx in corr_matrix.index:
+            val = corr_matrix.loc[idx, col]
+            if idx == col:
+                continue
+            if val > 0.7:
+                st.success(f"{idx} ↔ {col}: Strong Positive Correlation ({val:.2f})")
+            elif val > 0.3:
+                st.info(f"{idx} ↔ {col}: Moderate Positive Correlation ({val:.2f})")
+            elif val < -0.7:
+                st.error(f"{idx} ↔ {col}: Strong Negative Correlation ({val:.2f})")
+            elif val < -0.3:
+                st.warning(f"{idx} ↔ {col}: Moderate Negative Correlation ({val:.2f})")
+
+    # Professional summary analysis
+    st.markdown("""
+    **Heatmap Analysis:**
+    - This table quantifies the pairwise relationship between all four core financial metrics
+    - Strong positive values indicate metrics move in the same direction
+    - Strong negative values indicate metrics move inversely to each other
+    - This demonstrates the internal operational and capital structure linkage of the company
+    """)
+    st.markdown("---")
+    
     # --------------------------
     # Limitations
     # --------------------------
