@@ -37,7 +37,7 @@ Run the comman:
 
 ## 6. Product link / Demo
 Live interactive dashboard deployment:
-(https://acc102-n374fynaryjmxeta6rxx46.streamlit.app/)
+(https://acc102-m4zgfcfszz6fjggrfqfa32.streamlit.app/)
 A 1–3 minute demo video showing full tool functionality is also attached in the submission folder.
 
 
