@@ -1,6 +1,5 @@
-pandas>=2.0.0
-streamlit>=1.28.0
-matplotlib>=3.7.0
-numpy>=1.24.0
-plotly>=5.18.0
-wrds>=3.1.0
+pandas==2.2.3
+streamlit==1.38.0
+numpy==1.26.4
+plotly==5.24.1
+wrds==3.1.2
