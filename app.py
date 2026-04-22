@@ -34,15 +34,6 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
-# --------------------------
-# Page Basic Configuration
-# --------------------------
-st.set_page_config(
-    page_title="S&P 500 Financial Analysis Dashboard",
-    page_icon="📊",
-    layout="wide",
-    initial_sidebar_state="expanded"
-)
 
 # Initialize session state to cache data and avoid repeated WRDS connections
 if "df" not in st.session_state:
@@ -72,84 +63,81 @@ if authenticate_btn:
         if wrds is None:
             st.warning("⚠️ Cloud environment cannot run live WRDS connection")
             st.info("✅ Local version supports full direct WRDS connection for grading requirement")
+            # 自动加载离线CSV
+            df = pd.read_csv("wrds_financial_data.csv")
+            df["year"] = df["year"].astype(int)
+            market_avg = df.groupby("year")[["ROA","ROE","Debt_Asset","Profit_Margin"]].mean().reset_index()
+            st.session_state.df = df
+            st.session_state.market_avg = market_avg
+        else:
+            try:
+                # Use cached data if available to improve speed
+                if st.session_state.df is not None:
+                    st.success("✅ Data already loaded (Cached Mode, No Reconnection)")
+                else:
+                    # Establish WRDS connection and retrieve raw data
+                    db = wrds.Connection(wrds_username=wrds_username, wrds_password=wrds_password)
+                    st.success("✅ Successfully connected to WRDS Database!")
 
-    # 自动加载你仓库里的离线CSV数据，直接渲染完整仪表盘
-    df = pd.read_csv("wrds_financial_data.csv")
-    df["year"] = df["year"].astype(int)
-    market_avg = df.groupby("year")[["ROA","ROE","Debt_Asset","Profit_Margin"]].mean().reset_index()
+                    # Query financial data from Compustat
+                    query = """
+                    SELECT 
+                        conm,
+                        fyear as year,
+                        at,
+                        lt,
+                        ni,
+                        revt,
+                        dltt
+                    FROM 
+                        comp.funda
+                    WHERE 
+                        fyear BETWEEN 2020 AND 2024
+                        AND indfmt = 'INDL'
+                        AND datafmt = 'STD'
+                        AND popsrc = 'D'
+                        AND consol = 'C'
+                    """
 
-    # 存入全局缓存，后面所有图表正常调用
-    st.session_state.df = df
-    st.session_state.market_avg = market_avg
+                    raw_df = db.raw_sql(query)
+                    db.close()
 
-        try:
-            # Use cached data if available to improve speed
-            if st.session_state.df is not None:
-                st.success("✅ Data already loaded (Cached Mode, No Reconnection)")
-            else:
-                # Establish WRDS connection and retrieve raw data
-                db = wrds.Connection(wrds_username=wrds_username, wrds_password=wrds_password)
-                st.success("✅ Successfully connected to WRDS Database!")
+                    # Calculate key financial ratios
+                    raw_df['ROA'] = raw_df['ni'] / raw_df['at']
+                    raw_df['ROE'] = raw_df['ni'] / raw_df['lt']
+                    raw_df['Debt_Asset'] = raw_df['dltt'] / raw_df['at']
+                    raw_df['Profit_Margin'] = raw_df['ni'] / raw_df['revt']
 
-                # Query financial data from Compustat
-                query = """
-                SELECT 
-                    conm,
-                    fyear as year,
-                    at,
-                    lt,
-                    ni,
-                    revt,
-                    dltt
-                FROM 
-                    comp.funda
-                WHERE 
-                    fyear BETWEEN 2020 AND 2024
-                    AND indfmt = 'INDL'
-                    AND datafmt = 'STD'
-                    AND popsrc = 'D'
-                    AND consol = 'C'
-                """
+                    # Data cleaning and filtering
+                    df = raw_df.dropna(subset=["conm", "year", "ROA", "ROE", "Debt_Asset", "Profit_Margin"]).copy()
+                    df["year"] = df["year"].astype(int)
 
-                raw_df = db.raw_sql(query)
-                db.close()
+                    # Remove extreme outliers
+                    df = df[
+                        (df["ROA"].between(-0.5, 0.5)) &
+                        (df["ROE"].between(-1.0, 1.0)) &
+                        (df["Debt_Asset"].between(0, 1.5)) &
+                        (df["Profit_Margin"].between(-1.0, 1.0))
+                    ]
 
-                # Calculate key financial ratios
-                raw_df['ROA'] = raw_df['ni'] / raw_df['at']
-                raw_df['ROE'] = raw_df['ni'] / raw_df['lt']
-                raw_df['Debt_Asset'] = raw_df['dltt'] / raw_df['at']
-                raw_df['Profit_Margin'] = raw_df['ni'] / raw_df['revt']
+                    # Keep only 200 companies to ensure smooth performance
+                    unique_firms = df["conm"].unique()[:200]
+                    df = df[df["conm"].isin(unique_firms)]
 
-                # Data cleaning and filtering
-                df = raw_df.dropna(subset=["conm", "year", "ROA", "ROE", "Debt_Asset", "Profit_Margin"]).copy()
-                df["year"] = df["year"].astype(int)
+                    # Sort data and calculate market average
+                    df = df.sort_values(by=["conm", "year"]).reset_index(drop=True)
+                    market_avg = df.groupby("year")[["ROA","ROE","Debt_Asset","Profit_Margin"]].mean().reset_index()
 
-                # Remove extreme outliers
-                df = df[
-                    (df["ROA"].between(-0.5, 0.5)) &
-                    (df["ROE"].between(-1.0, 1.0)) &
-                    (df["Debt_Asset"].between(0, 1.5)) &
-                    (df["Profit_Margin"].between(-1.0, 1.0))
-                ]
+                    # Save to cache
+                    st.session_state.df = df
+                    st.session_state.market_avg = market_avg
 
-                # Keep only 200 companies to ensure smooth performance
-                unique_firms = df["conm"].unique()[:200]
-                df = df[df["conm"].isin(unique_firms)]
+                    st.success("✅ Data successfully loaded (Optimized for Speed | 200 Companies)")
+                    st.markdown("---")
 
-                # Sort data and calculate market average
-                df = df.sort_values(by=["conm", "year"]).reset_index(drop=True)
-                market_avg = df.groupby("year")[["ROA","ROE","Debt_Asset","Profit_Margin"]].mean().reset_index()
-
-                # Save to cache
-                st.session_state.df = df
-                st.session_state.market_avg = market_avg
-
-                st.success("✅ Data successfully loaded (Optimized for Speed | 200 Companies)")
-                st.markdown("---")
-
-        except Exception as e:
-            st.error(f"❌ WRDS Connection Failed: {str(e)}")
-            st.info("💡 Tips: Check your username/password, or ensure WRDS access is enabled for your account.")
+            except Exception as e:
+                st.error(f"❌ WRDS Connection Failed: {str(e)}")
+                st.info("💡 Tips: Check your username/password, or ensure WRDS access is enabled for your account.")
 
 # --------------------------
 # Main Dashboard Interface
