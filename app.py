@@ -4,11 +4,6 @@
 # Integrated: WRDS Authentication + 8 Charts + DuPont/PEST/Risk/Market Comparison
 # Upgraded: Year Filter + Company Search + Full Interactive Sidebar + Speed Optimized (200 companies only)
 
-# Force install missing dependency on cloud deployment
-import sys
-import subprocess
-subprocess.check_call([sys.executable, "-m", "pip", "install", "plotly"])
-
 import streamlit as st
 import pandas as pd
 import numpy as np
