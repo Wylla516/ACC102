@@ -3,11 +3,6 @@
 # Data Source: Direct WRDS Connection (2020-2024 S&P 500)
 # Integrated: WRDS Authentication + 8 Charts + DuPont/PEST/Risk/Market Comparison
 # Upgraded: Year Filter + Company Search + Full Interactive Sidebar + Speed Optimized (200 companies only)
-
-try:
-    import plotly.express as px
-except ImportError:
-    px = None
     
 import streamlit as st
 import pandas as pd
