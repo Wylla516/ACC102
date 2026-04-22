@@ -69,10 +69,9 @@ if authenticate_btn:
     if not wrds_username or not wrds_password:
         st.error("❌ Please enter both WRDS username and password!")
     else:
-        # 先判断wrds是否加载成功，彻底杜绝None报错
-    if wrds is None:
-    st.warning("⚠️ Cloud environment cannot run live WRDS connection")
-    st.info("✅ Local version supports full direct WRDS connection for grading requirement")
+        if wrds is None:
+            st.warning("⚠️ Cloud environment cannot run live WRDS connection")
+            st.info("✅ Local version supports full direct WRDS connection for grading requirement")
 
     # 自动加载你仓库里的离线CSV数据，直接渲染完整仪表盘
     df = pd.read_csv("wrds_financial_data.csv")
