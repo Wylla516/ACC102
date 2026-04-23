@@ -84,7 +84,7 @@ The primary intended users are ACC102 course students, junior financial analysts
 ---
 
 ## 🔗 6. Live Product Demo & Deployment
-✅ **Official Deployed Dashboard Link**: [Paste your live Streamlit app URL here]
+✅ **Official Deployed Dashboard Link**: [https://acc102-m4zgfcfszz6fjggrfqfa32.streamlit.app/]
 ✅ **Full Interactive Functionality**: All 9 charts, filters and academic analysis modules fully operational
 ✅ **Assignment Demo Video**: 1–3 minute walkthrough presentation video submitted alongside this repository
 ✅ **Local Performance**: Full original WRDS direct database connection functionality preserved for submission grading
