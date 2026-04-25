@@ -63,7 +63,6 @@ if authenticate_btn:
         if wrds is None:
             st.warning("⚠️ Cloud environment cannot run live WRDS connection")
             st.info("✅ Local version supports full direct WRDS connection for grading requirement")
-            # 自动加载离线CSV
             df = pd.read_csv("wrds_financial_data.csv")
             df["year"] = df["year"].astype(int)
             market_avg = df.groupby("year")[["ROA","ROE","Debt_Asset","Profit_Margin"]].mean().reset_index()
