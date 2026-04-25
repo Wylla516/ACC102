@@ -12,7 +12,7 @@ The primary intended users are ACC102 course students, junior financial analysts
 
 ## 📂 2. Dataset Information
 - **Primary Data Source**: WRDS Compustat Fundamentals Annual Database (official academic industry standard financial dataset)
-- **Data Access Date**: **April 10, 2026**
+- **Data Access Date**: **April 12, 2026**
 - **Data Access Period**: 5 full fiscal years, 2020 – 2024
 - **Data Acquisition Method**: Direct live SQL query via official WRDS Python API connection
 - **Core Raw Variables Pulled**:
